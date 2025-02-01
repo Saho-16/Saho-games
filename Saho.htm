@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>موقع ساهو فيو</title>
+  <style>
+   
+body {
+  font-family: 'Andalus', serif; /* خط اندلسي */
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.5s;
+  background-color: #f0f0f0; /* لون خلفية */
+}
+
+body.dark-mode {
+  background-color: #1A1D23; /* لون داكن */
+  color: #fff;
+}
+
+header {
+  background-color: #007bff; /* لون أزرق */
+  padding: 20px;
+  text-align: center;
+}
+
+header nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+header nav ul li {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+header nav a {
+  text-decoration: none;
+  color: #fff;
+}
+
+header nav a:hover {
+  color: #ccc;
+}
+
+#dark-mode-btn {
+  background-color: #ff0000; /* لون أحمر */
+  color: #fff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+#dark-mode-btn:hover {
+  background-color: #ff3333;
+}
+
+.game-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+
+.game-container {
+  display: flex;
+  flex-wrap: nowrap; /* لا تسمح بالانتقال إلى سطر جديد */
+  justify-content: space-around;
+  overflow-x: auto; /* إضافة شريط تمرير أفقي */
+}
+
+.game {
+  margin: 20px;
+  width: 200px; /* تعديل العرض حسب الحاجة */
+  text-align: center;
+  background-color: #f0f0f0;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  color: #FF69B4; /* لون وردي */
+}
+  </style>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header role="banner">
+    <h1>موقع ساهو فيو</h1>
+    <nav role="navigation">
+      <ul>
+        <li><a href="https://www.saho-view.com/home" aria-label="البلوق">البلوق</a></li>
+        <li><a href="https://www.saho-view.com/games" aria-label="الألعاب">الألعاب</a></li>
+        <li><a href="https://www.saho-view.com/contact" aria-label="الاتصال">الاتصال</a></li>
+        <li><button id="dark-mode-btn" aria-label="وضع الداكن">وضع الداكن</button></li>
+      </ul>
+    </nav>
+  </header>
+  <main role="main">
+    <section id="games">
+      <h2> البوت ميتا </h2>
+<input id="user-input" type="text" />
+<button id="send-btn">إرسال</button>
+<button id="clear-btn">مسح المحادثة</button>
+<button id="lang-btn">تغيير اللغة</button>
+<div id="chat-log"></div>
+<div class="game" id="number-guess-game">
+  <h3>لعبة تخمين الرقم</h3>
+  <button id="number-guess-start" aria-label="بدء اللعبة">بدء اللعبة</button>
+  <div id="number-guess-input"></div>
+  <p id="number-guess-score">المحاولات: 0</p>
+  <p id="number-guess-result"></p>
+  <p id="number-guess-hint"></p>
+</div>
+<div class="game" id="riddles-game">
+  <h3>لعبة الفوازير</h3>
+  <button id="riddles-start">ابدأ اللعبة</button>
+  <div id="riddles-questions"></div>
+  <p id="riddles-score">النتيجة: 0 نقطة</p>
+</div>
+      <div class="game-container">
+        <div class="game" id="x-o-game">
+          <h3>إكس أو</h3>
+          <button id="x-o-start" aria-label="بدء اللعبة">بدء اللعبة</button>
+          <div id="x-o-board" role="grid">
+            <div class="row">
+              <div class="cell" id="cell-1" role="gridcell"></div>
+              <div class="cell" id="cell-2" role="gridcell"></div>
+              <div class="cell" id="cell-3" role="gridcell"></div>
+        </div>
+        <div class="row">
+          <div class="cell" id="cell-4" role="gridcell"></div>
+          <div class="cell" id="cell-5" role="gridcell"></div>
+          <div class="cell" id="cell-6" role="gridcell"></div>
+        </div>
+        <div class="row">
+          <div class="cell" id="cell-7" role="gridcell"></div>
+          <div class="cell" id="cell-8" role="gridcell"></div>
+          <div class="cell" id="cell-9" role="gridcell"></div>
+        </div>
+      </div>
+      <p id="x-o-score">النتيجة: 0 نقطة</p>
+    </div>
+    <div class="game" id="millionaire-game">
+      <h3>من سيربح المليون</h3>
+      <button id="millionaire-start" aria-label="بدء اللعبة">بدء اللعبة</button>
+      <div id="millionaire-questions"></div>
+      <p id="millionaire-score">النتيجة : 0 دولار</p>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer role="contentinfo">
+<p>جميع الحقوق محفوظة &copy; 2025</p>
+<a href="mailto:info@saho-view.com">الاتصال</a>
+</footer>
+<script>
+// نظام الداكن
+const darkModeBtn = document.getElementById('dark-mode-btn');
+darkModeBtn.addEventListener('click', () => {
+document.body.classList.toggle('dark-mode');
+localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+});
+if (localStorage.getItem('darkMode') === 'true') {
+document.body.classList.add('dark-mode');
+}
+
+
+
+// المساعد ميتا
+const chatLog = document.getElementById('chat-log');
+const userInput = document.getElementById('user-input');
+const sendBtn = document.getElementById('send-btn');
+const clearBtn = document.getElementById('clear-btn');
+
+const responses = {
+  'ar': {
+    'مرحبا': 'مرحباً! كيف يمكنني مساعدتك؟',
+    'كيف حالك': 'أنا بخير، شكراً!',
+    'ما هو اسمك': 'أنا بوت ميتا.',
+    'ما هو هدفك': 'مساعدتك!',
+    'هل يمكنك مساعدتي': 'بالطبع! ما هو سؤالك؟',
+    'شكرا': 'على الرحب والسعة!',
+    'ما هو مستقبلك': 'مساعدة الناس!',
+    'هل أنت سعيد': 'نعم!',
+    'هل يمكنك الشعور': 'لا!',
+    'ما هي وظيفتك': 'مساعدة الناس، الترجمة، التعلم!',
+    'كيف تعمل': 'أستخدم الذكاء الاصطناعي!',
+    'ما هي لغاتك': 'العربية!',
+    'هل يمكنك الترجمة': 'نعم!',
+    'هل تقبل الطلبات': 'نعم!',
+    'كيف تعمل': 'أستخدم الذكاء الاصطناعي!',
+    'ما هي لغاتك': 'العربية!',
+    'هل يمكنك الترجمة': 'نعم!',
+    'هل تقبل الطلبات': 'نعم!',
+    'ما هو السؤال الأكثر شيوعًا': 'ما هو اسمك؟',
+    'من هو الرئيس الحالي لمصر': 'عبد الفتاح السيسي',
+    'ما هو عاصمة مصر': 'القاهرة',
+    'كم عدد الدول العربية': '22 دولة',
+    'ما هي أهمية الذكاء الاصطناعي': 'تحسين الخدمات وتسهيل الحياة',
+    'هل يمكن للذكاء الاصطناعي أن يفكر مثل الإنسان': 'لا، لكنه يمكن أن يساعد في العديد من المهام',
+    'ما هو مستقبل الذكاء الاصطناعي': 'سوف يلعب دورًا كبيرًا في تحسين الحياة',
+    'هل يمكنني أن أكون صديقك': 'نعم، سأكون سعيدًا بذلك!',
+    'ما هي أهمية الصداقة': 'تجلب السعادة وتقوي الروابط',
+    'هل يمكنك مساعدتي في حل مشكلة': 'بالطبع! ما هي المشكلة؟',
+	    'هل يمكن للذكاء الاصطناعي أن يفكر مثل الإنسان': 'لا، لكنه يمكن أن يساعد في العديد من المهام',
+    'ما هو مستقبل الذكاء الاصطناعي': 'سوف يلعب دورًا كبيرًا في تحسين الحياة',
+    'هل يمكنني أن أكون صديقك': 'نعم، سأكون سعيدًا بذلك!',
+    'ما هي أهمية الصداقة': 'تجلب السعادة وتقوي الروابط',
+    'هل يمكنك مساعدتي في حل مشكلة': 'بالطبع! ما هي المشكلة؟',
+    'كيف يمكنني تعلم اللغة الإنجليزية': 'يمكنك تعلم اللغة الإنجليزية من خلال الدورات والكتب والممارسة',
+    'ما هي أهمية تعلم اللغة الإنجليزية': 'تفتح أبوابًا جديدة للتواصل والتعلم',
+    'هل يمكنك مساعدتي في تعلم اللغة الإنجليزية': 'بالطبع! يمكنني مساعدتك في تعلم اللغة الإنجليزية',
+    'ما هي أهمية القراءة': 'تفتح أبوابًا جديدة للتعلم والتنمية',
+    'هل يمكنك مساعدتي في اختيار كتاب': 'بالطبع! ما هو نوع الكتاب الذي تبحث عنه؟',
+    'ما هي أهمية الرياضة': 'تحسين الصحة واللياقة البدنية',
+    'هل يمكنك مساعدتي في اختيار رياضة': 'بالطبع! ما هو نوع الرياضة الذي تبحث عنه؟',
+    'ما هي أهمية التكنولوجيا': 'تحسين الخدمات وتسهيل الحياة',
+    'هل يمكنك مساعدتي في تعلم التكنولوجيا': 'بالطبع! يمكنني مساعدتك في تعلم التكنولوجيا',
+    'ما هو السؤال الأكثر شيوعًا': 'ما هو اسمك؟',
+  },
+};
+
+let conversation = [];
+let userName = '';
+let memory = {};
+
+sendBtn.addEventListener('click', () => {
+  const userMessage = userInput.value.trim();
+  if (userMessage) {
+    conversation.push(`أنت: ${userMessage}`);
+    chatLog.innerHTML += `<p>أنت: ${userMessage}</p>`;
+    const response = getResponse(userMessage);
+    conversation.push(`ميتا: ${response}`);
+    setTimeout(() => {
+      chatLog.innerHTML += `<p>ميتا: ${response}</p>`;
+    }, 1000);
+    userInput.value = '';
+  }
+});
+
+clearBtn.addEventListener('click', () => {
+  conversation = [];
+  chatLog.innerHTML = '';
+  memory = {};
+});
+
+function getResponse(userMessage) {
+  if (userMessage.startsWith('اسمي')) {
+    userName = userMessage.split(' ')[1];
+    return `مرحباً ${userName}!`;
+  } else if (userMessage.startsWith('أتعلم')) {
+    const keyword = userMessage.split(' ')[1];
+    const value = userMessage.split(' ')[2];
+    memory[keyword] = value;
+    return `لقد تعلمت ${keyword}!`;
+  } else if (userMessage.startsWith('ما هو')) {
+    const keyword = userMessage.split(' ')[2];
+    if (memory[keyword]) {
+      return memory[keyword];
+    }
+  }
+  const response = responses['ar'][userMessage] || 'لا أفهم ما تقول!';
+  const hint = getHint(userMessage);
+  return hint ? `${response}\n${hint}` : response;
+}
+
+function getHint(userMessage) {
+  if (userMessage.includes("كيف")) {
+    return "هل تقصد 'كيف يمكنني مساعدتك؟' أو 'كيف تعمل؟'";
+  } else if (userMessage.includes("ما هو")) {
+    return "هل تقصد 'ما هو اسمك؟' أو 'ما هو هدفك؟'";
+  } else if (userMessage.includes("هل")) {
+    return "هل تقصد 'هل يمكنك مساعدتي؟' أو 'هل أنت ذكاء اصطناعي؟'";
+  } else if (userMessage.includes("ما")) {
+    return "هل تقصد 'ما هو مستقبلك؟' أو 'ما هي وظيفتك؟'";
+  }
+  return null;
+}
+
+function showConversation() {
+  chatLog.innerHTML = conversation.map(msg => `<p>${msg}</p>`).join('');
+}
+
+// لعبة تخمين الرقم
+
+let secretNumber = Math.floor(Math.random() * 50) + 1;
+let attempts = 0;
+
+document.getElementById("number-guess-start").addEventListener("click", startGame);
+
+function startGame() {
+  document.getElementById("number-guess-start").style.display = "none";
+  showInputField();
+}
+
+function showInputField() {
+  const inputField = document.getElementById("number-guess-input");
+  inputField.innerHTML = `
+    <input id="number-guess-input-field" type="number" />
+    <button id="number-guess-btn">تخمين</button>
+  `;
+
+  document.getElementById("number-guess-btn").addEventListener("click", checkGuess);
+}
+
+function checkGuess() {
+  let userGuess = Number(document.getElementById("number-guess-input-field").value);
+
+  attempts++;
+
+  if (userGuess === secretNumber) {
+    document.getElementById("number-guess-result").textContent = `مبارك! لقد فزت في المحاولة رقم ${attempts}`;
+    document.getElementById("number-guess-btn").disabled = true;
+    document.getElementById("number-guess-hint").textContent = "";
+  } else if (userGuess < secretNumber) {
+    document.getElementById("number-guess-result").textContent = "الرقم الذي أدخلته صغير جدًا!";
+    document.getElementById("number-guess-hint").textContent = "حاول رقمًا أكبر!";
+  } else {
+    document.getElementById("number-guess-result").textContent = "الرقم الذي أدخلته كبير جدًا!";
+    document.getElementById("number-guess-hint").textContent = "حاول رقمًا أصغر!";
+  }
+
+  document.getElementById("number-guess-score").textContent = `المحاولات: ${attempts}`;
+}
+
+// فوازير
+const riddles = [
+  {
+    question: "ما هو الشيء الذي يبدأ بالحياة ويتم بالموت؟",
+    answer: "الشمعة",
+    options: ["الشمعة", "النار", "الهواء"],
+    hint: "شيء يضيء"
+  },
+  {
+    question: "ما هو الشيء الذي يأكل ويأكل ولا يشبع؟",
+    answer: "النار",
+    options: ["النار", "الماء", "الهواء"],
+    hint: "شيء يحرق"
+  },
+  {
+    question: "ما هو الشيء الذي يوجد في كل مكان، لكن لا يمكن رؤيته؟",
+    answer: "الهواء",
+    options: ["الهواء", "الماء", "النار"],
+    hint: "شيء غير مرئي"
+  },
+  {
+    question: "ما هو الشيء الذي يبدأ بلا نهاية وينتهي بلا بداية؟",
+    answer: "الدائرة",
+    options: ["الدائرة", "المستقيم", "المثلث"],
+    hint: "شكل هندسي"
+  },
+  {
+    question: "ما هو الشيء الذي يوجد في البحر ولا يغوص؟",
+    answer: "السفينة",
+    options: ["السفينة", "السمكة", "الماء"],
+    hint: "شيء يوجد على الماء"
+  },
+  {
+    question: "من هو النبي الذي بعث في مكة المكرمة؟",
+    answer: "محمد صلى الله عليه وسلم",
+    options: ["محمد صلى الله عليه وسلم", "عيسى عليه السلام", "موسى عليه السلام"],
+    hint: "نبي الإسلام"
+  },
+  {
+    question: "ما هو اسم السورة التي توجد فيها كلمة 'الله' أكثر من أي سورة أخرى؟",
+    answer: "سورة المجادلة",
+    options: ["سورة المجادلة", "سورة البقرة", "سورة آل عمران"],
+    hint: "سورة قرآنية"
+  },
+  {
+    question: "من هو مؤسس الدولة العثمانية؟",
+    answer: "عثمان بن عرص",
+    options: ["عثمان بن عرص", "عبد الحميد الأول", "سليمان القانوني"],
+    hint: "مؤسس الدولة العثمانية"
+  },
+  {
+    question: "ما هو اسم أطول نهر في العالم؟",
+    answer: "النيل",
+    options: ["النيل", "الأمازون", "الميسيسيبي"],
+    hint: "نهر في أفريقيا"
+  },
+  {
+    question: "كم عدد الكواكب في المجموعة الشمسية؟",
+    answer: "8",
+    options: ["7", "8", "9"],
+    hint: "عدد الكواكب"
+  }
+];
+
+
+let currentRiddle = 0;
+let riddlesScore = 0;
+
+document.getElementById("riddles-start").addEventListener("click", () => {
+  showRiddle();
+});
+
+function showRiddle() {
+  const riddlesDiv = document.getElementById("riddles-questions");
+  const optionsHTML = riddles[currentRiddle].options.map(option => `<button class="option-btn">${option}</button>`).join('');
+  riddlesDiv.innerHTML = `
+    <p>${riddles[currentRiddle].question}</p>
+    ${optionsHTML}
+    <button id="hint-btn">تلميح</button>
+  `;
+  
+  document.querySelectorAll('.option-btn').forEach(btn => {
+    btn.addEventListener('click', checkAnswer);
+  });
+  
+  document.getElementById("hint-btn").addEventListener("click", () => {
+    alert(riddles[currentRiddle].hint);
+  });
+}
+
+function checkAnswer(e) {
+  const userAnswer = e.target.textContent;
+  if (userAnswer === riddles[currentRiddle].answer) {
+    alert("إجابة صحيحة!");
+    riddlesScore++;
+    document.getElementById("riddles-score").innerText = `النتيجة: ${riddlesScore} نقطة`;
+  } else {
+    alert("إجابة خاطئة!");
+  }
+  currentRiddle++;
+  if (currentRiddle < riddles.length) {
+    showRiddle();
+  } else {
+    alert("لقد انتهت اللعبة!");
+    restartRiddlesGame();
+  }
+}
+
+function restartRiddlesGame() {
+  currentRiddle = 0;
+  riddlesScore = 0;
+  document.getElementById("riddles-score").innerText = `النتيجة: ${riddlesScore} نقطة`;
+  showRiddle();
+}
+
+
+// ألعاب إكس أو
+let xoScore = 0;
+const xOStartBtn = document.getElementById('x-o-start');
+xOStartBtn.addEventListener('click', () => {
+  startXOGame();
+});
+function startXOGame() {
+  const cells = document.querySelectorAll('.cell');
+  cells.forEach((cell, index) => {
+    cell.addEventListener('click', () => {
+      if (index % 2 === 0) {
+        cell.innerHTML = 'X';
+      } else {
+        cell.innerHTML = 'O';
+      }
+      checkXOWinner();
+    });
+  });
+}
+function checkXOWinner() {
+  const cells = document.querySelectorAll('.cell');
+  const winningCombinations = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
+  winningCombinations.forEach((combination) => {
+    if (
+      cells[combination[0]].innerHTML === 'X' &&
+      cells[combination[1]].innerHTML === 'X' &&
+      cells[combination[2]].innerHTML === 'X'
+    ) {
+      alert('اللاعب X فاز!');
+      xoScore++;
+      document.getElementById('x-o-score').innerText = `النتيجة: ${xoScore} نقطة`;
+      restartXOGame();
+    } else if (
+      cells[combination[0]].innerHTML === 'O' &&
+      cells[combination[1]].innerHTML === 'O' &&
+      cells[combination[2]].innerHTML === 'O'
+    ) {
+      alert('اللاعب O فاز!');
+      xoScore++;
+      document.getElementById('x-o-score').innerText = `النتيجة: ${xoScore} نقطة`;
+      restartXOGame();
+    }
+  });
+}
+function restartXOGame() {
+  const cells = document.querySelectorAll('.cell');
+  cells.forEach((cell) => {
+    cell.innerHTML = '';
+  });
+}
+
+// لعبة من سيربح المليون
+let millionaireScore = 0;
+const millionaireStartBtn = document.getElementById('millionaire-start');
+millionaireStartBtn.addEventListener('click', () => {
+  showMillionaireQuestion();
+});
+
+let currentQuestion = 0;
+const questions = [
+
+  {
+    question: 'ما هو عاصمة مصر؟',
+    answers: ['القاهرة', 'الإسكندرية', 'الجيزة'],
+    correctAnswer: 0
+  },
+  {
+    question: 'كم عدد جنود المسلمين في معركة فتح مكة؟',
+    answers: ['12 ألف', '5 ألف', 'ثلاث مئة'],
+    correctAnswer: 0
+  },
+  {
+    question: 'كم عدد الخلفاء الراشدين',
+    answers: ['2', '4', '5'],
+    correctAnswer: 1
+  },
+  {
+    question: 'من هو مؤسس الإسلام؟',
+    answers: ['محمد', 'عيسى', 'موسى'],
+    correctAnswer: 0
+  },
+  {
+    question: 'ما هي عاصمة السعودية؟',
+    answers: ['الرياض', 'مكة', 'المدينة'],
+    correctAnswer: 0
+  },
+  {
+    question: 'من هو خليفة المسلمين الثاني؟',
+    answers: ['عمر بن الخطاب', 'عثمان بن عفان', 'علي بن أبي طالب'],
+    correctAnswer: 0
+  },
+  {
+    question: 'ما هو اسم النبي الذي بكت له جزع الشجرة؟',
+    answers: ['محمد', 'موسى', 'صالح'],
+    correctAnswer: 0
+  },
+  {
+question: 'من هو مكتشف أمريكا؟',
+answers: ['كولومبوس', 'فاسكو دا غاما', 'ماجلان'],
+correctAnswer: 0
+},
+ {
+question: 'ما هو اسم النهر الذي جف في القرآن الكريم؟',
+answers: ['الفرات', 'النيل', 'العاصي'],
+correctAnswer: 0
+},
+ {
+question: 'كم عدد الكواكب في المجموعة الشمسية؟',
+answers: ['8', '9', '10'],
+correctAnswer: 0
+},
+ {
+question: 'من هو مؤسس الدولة العثمانية؟',
+answers: ['عثمان بن عرص', 'عثمان بن عفان', 'سليمان القانوني'],
+correctAnswer: 0
+},
+ {
+question: 'ما هو اسم عاصمة اليونان؟',
+answers: ['أثينا', 'اسطنبول', 'ANKARA'],
+correctAnswer: 0
+},
+ {
+question: 'من هو النبي الذي بعث في مكة المكرمة؟',
+answers: ['محمد صلى الله عليه وسلم', 'عيسى عليه السلام', 'موسى عليه السلام'],
+correctAnswer: 0
+},
+ {
+question: 'ما هو اسم أطول نهر في العالم؟',
+answers: ['النيل', 'الأمازون', 'اليانغتسي'],
+correctAnswer: 0
+},
+ {
+question: 'كم عدد أوجه المثمن؟',
+answers: ['6', '8', '10'],
+correctAnswer: 1
+},
+ {
+question: 'من هو خليفة المسلمين الثالث؟',
+answers: ['عثمان بن عفان', 'علي بن أبي طالب', 'عمر بن الخطاب'],
+correctAnswer: 0
+},
+ {
+question: 'ما هو اسم عاصمة فرنسا؟',
+answers: ['باريس', 'لندن', 'برلين'],
+correctAnswer: 0
+},
+{
+    question: 'ما إسم أختك',
+    answers: ['أسيل', 'تاليا', 'مريم'],
+    correctAnswer: 0
+  },
+{
+    question: 'من هو مكتشف قناة السويس؟',
+    answers: ['أسيل', 'تاليا', 'مريم'],
+    correctAnswer: 0
+  },
+  {
+    question: 'كم عدد السور في القرآن الكريم؟',
+    answers: ['114', '124', '154'],
+    correctAnswer: 0
+  },
+  {
+    question: 'ما هو اسم المسجد الأول في الإسلام؟',
+    answers: ['المسجد الحرام', 'المسجد النبوي', 'مسجد القبلتين'],
+    correctAnswer: 2
+  },
+  {
+    question: 'من هو الصحابي الذي قال له النبي "أنت رجل الصواب"؟',
+    answers: ['أبو بكر الصديق', 'عمر بن الخطاب', 'عثمان بن عفان'],
+    correctAnswer: 0
+  }
+];
+
+function showMillionaireQuestion() {
+  const millionaireQuestionsDiv = document.getElementById('millionaire-questions');
+  millionaireQuestionsDiv.innerHTML = `
+    <h2>${questions[currentQuestion].question}</h2>
+    <ul>
+      ${questions[currentQuestion].answers
+        .map((answer, index) => {
+          return `<li><button>${answer}</button></li>`;
+        })
+        .join('')}
+    </ul>
+  `;
+  const answerButtons = document.querySelectorAll('#millionaire-questions button');
+  answerButtons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+      if (index === questions[currentQuestion].correctAnswer) {
+        alert('إجابة صحيحة!');
+        millionaireScore += 10000;
+        document.getElementById('millionaire-score').innerText = `النتيجة: ${millionaireScore} دولار`;
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+          showMillionaireQuestion();
+        } else {
+          alert('لقد انتهت اللعبة!');
+          restartMillionaireGame();
+        }
+      } else {
+        alert('إجابة خاطئة!');
+        restartMillionaireGame();
+      }
+    });
+  });
+}
+
+function restartMillionaireGame() {
+  currentQuestion = 0;
+  millionaireScore = 0;
+  document.getElementById('millionaire-score').innerText = `النتيجة: ${millionaireScore} دولار`;
+  showMillionaireQuestion();
+}
+</script>
+</body>
+</html>
